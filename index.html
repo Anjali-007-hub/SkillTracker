@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillTracker</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+:root{
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#1e293b;
+    --muted:#64748b;
+    --primary:#4f46e5;
+    --border:#e2e8f0;
+    --success:#16a34a;
+    --warning:#d97706;
+    --danger:#dc2626;
+}
+
+body.dark{
+    --bg:#0f172a;
+    --card:#1e293b;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --border:#334155;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:240px;
+    height:100vh;
+    background:var(--card);
+    border-right:1px solid var(--border);
+    padding:25px 15px;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+    color:var(--primary);
+    margin-bottom:35px;
+    padding-left:10px;
+}
+
+.logo span{
+    color:var(--text);
+}
+
+.nav button{
+    width:100%;
+    border:none;
+    background:transparent;
+    color:var(--muted);
+    padding:13px 15px;
+    margin:4px 0;
+    border-radius:10px;
+    text-align:left;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:#eef2ff;
+    color:var(--primary);
+}
+
+body.dark .nav button:hover,
+body.dark .nav button.active{
+    background:#312e81;
+    color:white;
+}
+
+.bottom-menu{
+    position:absolute;
+    bottom:20px;
+    left:15px;
+    right:15px;
+}
+
+/* MAIN */
+
+.main{
+    margin-left:240px;
+    padding:30px;
+    max-width:1500px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.header h1{
+    font-size:28px;
+}
+
+.header p{
+    color:var(--muted);
+    margin-top:5px;
+}
+
+.theme-btn{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    padding:10px 15px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* CARDS */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 3px 12px rgba(0,0,0,.03);
+}
+
+.stat-title{
+    color:var(--muted);
+    font-size:14px;
+}
+
+.stat-value{
+    font-size:30px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.stat-sub{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:5px;
+}
+
+/* SECTION */
+
+.section{
+    margin-top:22px;
+}
+
+.section-title{
+    font-size:20px;
+    margin-bottom:15px;
+}
+
+/* PROGRESS */
+
+.progress{
+    height:9px;
+    background:#e5e7eb;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-bar{
+    height:100%;
+    background:var(--primary);
+    border-radius:20px;
+}
+
+/* TABLE */
+
+.table-card{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:14px;
+    border-bottom:1px solid var(--border);
+    text-align:left;
+    white-space:nowrap;
+}
+
+th{
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* BUTTONS */
+
+.btn{
+    border:none;
+    padding:10px 15px;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.primary{
+    background:var(--primary);
+    color:white;
+}
+
+.secondary{
+    background:#e2e8f0;
+    color:#334155;
+}
+
+.danger{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.small{
+    padding:7px 10px;
+    font-size:12px;
+}
+
+/* FORM */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-bottom:7px;
+    font-size:14px;
+    font-weight:600;
+}
+
+input,select{
+    width:100%;
+    padding:11px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    background:var(--card);
+    color:var(--text);
+    outline:none;
+}
+
+input:focus,select:focus{
+    border-color:var(--primary);
+}
+
+/* BADGES */
+
+.badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.green{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.yellow{
+    background:#fef3c7;
+    color:#b45309;
+}
+
+.red{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+.blue{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+/* CAREER */
+
+.career-box{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.readiness{
+    text-align:center;
+    padding:30px;
+}
+
+.circle{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    margin:20px auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:conic-gradient(var(--primary) 0deg,#e5e7eb 0deg);
+}
+
+.circle-inner{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:var(--card);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+    font-weight:bold;
+}
+
+/* ROADMAP */
+
+.roadmap-item{
+    padding:17px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    margin-bottom:12px;
+}
+
+.roadmap-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.roadmap-item p{
+    color:var(--muted);
+    font-size:14px;
+    margin-top:8px;
+}
+
+/* MODAL */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    justify-content:center;
+    align-items:center;
+    z-index:10;
+}
+
+.modal-box{
+    background:var(--card);
+    width:500px;
+    max-width:92%;
+    padding:25px;
+    border-radius:16px;
+    max-height:90vh;
+    overflow-y:auto;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.close{
+    border:none;
+    background:none;
+    color:var(--muted);
+    font-size:22px;
+    cursor:pointer;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+    .sidebar{
+        width:200px;
+    }
+
+    .main{
+        margin-left:200px;
+    }
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .career-box{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:650px){
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .bottom-menu{
+        position:relative;
+        bottom:auto;
+        left:auto;
+        right:auto;
+        margin-top:10px;
+    }
+
+    .main{
+        margin-left:0;
+        padding:18px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        Skill<span>Tracker</span>
+    </div>
+
+    <div class="nav">
+
+        <button class="active" onclick="showPage('dashboard',this)">
+            🏠 Dashboard
+        </button>
+
+        <button onclick="showPage('skills',this)">
+            📊 My Skills
+        </button>
+
+        <button onclick="showPage('career',this)">
+            💼 Career Readiness
+        </button>
+
+        <button onclick="showPage('roadmap',this)">
+            🗺️ Learning Roadmap
+        </button>
+
+        <button onclick="showPage('goals',this)">
+            🎯 Goals
+        </button>
+
+        <button onclick="showPage('achievements',this)">
+            🏆 Achievements
+        </button>
+
+        <button onclick="showPage('profile',this)">
+            👤 Profile
+        </button>
+
+    </div>
+
+    <div class="bottom-menu">
+        <button class="nav button" onclick="resetData()">
+            🔄 Reset Data
+        </button>
+    </div>
+
+</aside>
+
+
+<main class="main">
+
+<!-- ================= DASHBOARD ================= -->
+
+<section id="dashboard" class="page active">
+
+    <div class="header">
+
+        <div>
+            <h1>Dashboard</h1>
+            <p id="welcomeText">Track your skills and career progress.</p>
+        </div>
+
+        <button class="theme-btn" onclick="toggleDarkMode()">
+            🌙 Theme
+        </button>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="card">
+            <div class="stat-title">Total Skills</div>
+            <div class="stat-value" id="totalSkills">0</div>
+            <div class="stat-sub">Skills being tracked</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-title">Average Skill Level</div>
+            <div class="stat-value" id="averageSkill">0%</div>
+            <div class="stat-sub">Overall performance</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-title">Skill Gaps</div>
+            <div class="stat-value" id="skillGaps">0</div>
+            <div class="stat-sub">Skills requiring improvement</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-title">Career Readiness</div>
+            <div class="stat-value" id="dashboardReadiness">0%</div>
+            <div class="stat-sub">Based on selected career</div>
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <div class="section-title">
+            📈 Current Skill Performance
+        </div>
+
+        <div class="card" id="skillPerformance">
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <div class="section-title">
+            ⚠️ Your Skill Gaps
+        </div>
+
+        <div class="card" id="dashboardGaps">
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SKILLS ================= -->
+
+<section id="skills" class="page">
+
+    <div class="header">
+
+        <div>
+            <h1>My Skills</h1>
+            <p>Track your current level and target level.</p>
+        </div>
+
+        <button class="btn primary" onclick="openSkillModal()">
+            + Add Skill
+        </button>
+
+    </div>
+
+
+    <div class="card table-card">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Skill</th>
+                    <th>Category</th>
+                    <th>Current</th>
+                    <th>Target</th>
+                    <th>Gap</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="skillsTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CAREER ================= -->
+
+<section id="career" class="page">
+
+    <div class="header">
+
+        <div>
+            <h1>Career Readiness</h1>
+            <p>Compare your skills with the requirements of a career.</p>
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="form-group">
+
+            <label>Select Career</label>
+
+            <select id="careerSelect" onchange="calculateCareer()">
+
+                <option value="Software Developer">
+                    Software Developer
+                </option>
+
+                <option value="Web Developer">
+                    Web Developer
+                </option>
+
+                <option value="Data Scientist">
+                    Data Scientist
+                </option>
+
+                <option value="AI/ML Engineer">
+                    AI/ML Engineer
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="section career-box">
+
+        <div class="card readiness">
+
+            <h2>Career Readiness</h2>
+
+            <div class="circle" id="readinessCircle">
+
+                <div class="circle-inner" id="readinessValue">
+                    0%
+                </div>
+
+            </div>
+
+            <p id="readinessMessage">
+                Add your skills to calculate readiness.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>Required Skills</h2>
+
+            <br>
+
+            <div id="careerSkills"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= ROADMAP ================= -->
+
+<section id="roadmap" class="page">
+
+    <div class="header">
+
+        <div>
+            <h1>Learning Roadmap</h1>
+            <p>Rule-based priorities based on your skill gaps.</p>
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div id="roadmapList"></div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= GOALS ================= -->
+
+<section id="goals" class="page">
+
+    <div class="header">
+
+        <div>
+            <h1>Goals</h1>
+            <p>Track your learning and career goals.</p>
+        </div>
+
+        <button class="btn primary" onclick="addGoal()">
+            + Add Goal
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div id="goalsList"></div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= ACHIEVEMENTS ================= -->
+
+<section id="achievements" class="page">
+
+    <div class="header">
+
+        <div>
+            <h1>Achievements</h1>
+            <p>Keep track of your completed milestones.</p>
+        </div>
+
+        <button class="btn primary" onclick="addAchievement()">
+            + Add Achievement
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div id="achievementList"></div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PROFILE ================= -->
+
+<section id="profile" class="page">
+
+    <div class="header">
+
+        <div>
+            <h1>Profile</h1>
+            <p>Manage your student information.</p>
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input id="profileName" placeholder="Your name">
+            </div>
+
+            <div class="form-group">
+                <label>Course</label>
+                <input id="profileCourse" placeholder="B.Tech CSE">
+            </div>
+
+            <div class="form-group">
+                <label>Semester</label>
+                <input id="profileSemester" placeholder="S3">
+            </div>
+
+            <div class="form-group">
+                <label>Career Goal</label>
+                <input id="profileCareer" placeholder="Software Developer">
+            </div>
+
+        </div>
+
+        <button class="btn primary" onclick="saveProfile()">
+            Save Profile
+        </button>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- SKILL MODAL -->
+
+<div class="modal" id="skillModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2 id="skillModalTitle">Add Skill</h2>
+
+            <button class="close" onclick="closeSkillModal()">×</button>
+
+        </div>
+
+
+        <input type="hidden" id="editSkillId">
+
+
+        <div class="form-group">
+
+            <label>Skill Name</label>
+
+            <input id="skillName" placeholder="Example: Python">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Category</label>
+
+            <select id="skillCategory">
+
+                <option>Programming</option>
+                <option>Data Science</option>
+                <option>Web Development</option>
+                <option>Database</option>
+                <option>Computer Science</option>
+                <option>Soft Skill</option>
+                <option>Other</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Current Level (%)</label>
+
+                <input
+                    type="number"
+                    id="skillCurrent"
+                    min="0"
+                    max="100"
+                    placeholder="60"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Target Level (%)</label>
+
+                <input
+                    type="number"
+                    id="skillTarget"
+                    min="0"
+                    max="100"
+                    placeholder="85"
+                >
+
+            </div>
+
+        </div>
+
+
+        <button class="btn primary" onclick="saveSkill()">
+            Save Skill
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ================= DATA ================= */
+
+let skills = JSON.parse(localStorage.getItem("skills")) || [
+    {
+        id:1,
+        name:"Python",
+        category:"Programming",
+        current:70,
+        target:90
+    },
+    {
+        id:2,
+        name:"C Programming",
+        category:"Programming",
+        current:75,
+        target:85
+    },
+    {
+        id:3,
+        name:"Data Structures",
+        category:"Computer Science",
+        current:55,
+        target:85
+    },
+    {
+        id:4,
+        name:"HTML/CSS",
+        category:"Web Development",
+        current:65,
+        target:80
+    }
+];
+
+let goals = JSON.parse(localStorage.getItem("goals")) || [
+    {
+        id:1,
+        name:"Complete Data Structures",
+        progress:60
+    },
+    {
+        id:2,
+        name:"Build a Web Project",
+        progress:40
+    }
+];
+
+let achievements =
+JSON.parse(localStorage.getItem("achievements")) || [
+    {
+        id:1,
+        name:"Completed Python Basics",
+        type:"Course"
+    }
+];
+
+let profile =
+JSON.parse(localStorage.getItem("profile")) || {
+    name:"Student",
+    course:"B.Tech CSE",
+    semester:"S3",
+    career:"Software Developer"
+};
+
+
+/* ================= CAREER DATA ================= */
+
+const careers = {
+
+    "Software Developer":{
+        "Python":70,
+        "C Programming":65,
+        "Data Structures":80,
+        "Database":65,
+        "Git":60,
+        "Problem Solving":75
+    },
+
+    "Web Developer":{
+        "HTML/CSS":75,
+        "JavaScript":75,
+        "Git":60,
+        "Database":60,
+        "Problem Solving":65
+    },
+
+    "Data Scientist":{
+        "Python":80,
+        "Statistics":75,
+        "SQL":70,
+        "Data Analysis":75,
+        "Machine Learning":70
+    },
+
+    "AI/ML Engineer":{
+        "Python":85,
+        "Data Structures":75,
+        "Mathematics":75,
+        "Machine Learning":80,
+        "Statistics":70
+    }
+
+};
+
+
+/* ================= SAVE ================= */
+
+function saveData(){
+
+    localStorage.setItem("skills",JSON.stringify(skills));
+    localStorage.setItem("goals",JSON.stringify(goals));
+    localStorage.setItem("achievements",JSON.stringify(achievements));
+    localStorage.setItem("profile",JSON.stringify(profile));
+
+}
+
+
+/* ================= NAVIGATION ================= */
+
+function showPage(page,button){
+
+    document.querySelectorAll(".page")
+    .forEach(p=>p.classList.remove("active"));
+
+    document.getElementById(page)
+    .classList.add("active");
+
+    document.querySelectorAll(".nav button")
+    .forEach(b=>b.classList.remove("active"));
+
+    if(button)
+        button.classList.add("active");
+
+    renderAll();
+
+}
+
+
+/* ================= SKILL MODAL ================= */
+
+function openSkillModal(id=null){
+
+    document.getElementById("skillModal").style.display="flex";
+
+    if(id){
+
+        let skill=skills.find(s=>s.id===id);
+
+        document.getElementById("skillModalTitle")
+        .innerText="Edit Skill";
+
+        document.getElementById("editSkillId")
+        .value=id;
+
+        document.getElementById("skillName")
+        .value=skill.name;
+
+        document.getElementById("skillCategory")
+        .value=skill.category;
+
+        document.getElementById("skillCurrent")
+        .value=skill.current;
+
+        document.getElementById("skillTarget")
+        .value=skill.target;
+
+    }else{
+
+        document.getElementById("skillModalTitle")
+        .innerText="Add Skill";
+
+        document.getElementById("editSkillId").value="";
+
+        document.getElementById("skillName").value="";
+
+        document.getElementById("skillCurrent").value="";
+
+        document.getElementById("skillTarget").value="";
+
+    }
+
+}
+
+
+function closeSkillModal(){
+
+    document.getElementById("skillModal")
+    .style.display="none";
+
+}
+
+
+/* ================= SAVE SKILL ================= */
+
+function saveSkill(){
+
+    const name=
+    document.getElementById("skillName").value.trim();
+
+    const category=
+    document.getElementById("skillCategory").value;
+
+    const current=
+    Math.min(100,Math.max(0,
+    Number(document.getElementById("skillCurrent").value)));
+
+    const target=
+    Math.min(100,Math.max(0,
+    Number(document.getElementById("skillTarget").value)));
+
+    if(!name){
+
+        alert("Please enter a skill name.");
+        return;
+
+    }
+
+    if(target<current){
+
+        alert("Target level should be greater than or equal to current level.");
+        return;
+
+    }
+
+    const editId=
+    document.getElementById("editSkillId").value;
+
+
+    if(editId){
+
+        let skill=skills.find(s=>s.id==editId);
+
+        skill.name=name;
+        skill.category=category;
+        skill.current=current;
+        skill.target=target;
+
+    }else{
+
+        skills.push({
+
+            id:Date.now(),
+            name,
+            category,
+            current,
+            target
+
+        });
+
+    }
+
+    saveData();
+
+    closeSkillModal();
+
+    renderAll();
+
+}
+
+
+/* ================= DELETE SKILL ================= */
+
+function deleteSkill(id){
+
+    if(confirm("Delete this skill?")){
+
+        skills=skills.filter(s=>s.id!==id);
+
+        saveData();
+
+        renderAll();
+
+    }
+
+}
+
+
+/* ================= STATUS ================= */
+
+function getStatus(gap){
+
+    if(gap<=10){
+
+        return `<span class="badge green">Strong</span>`;
+
+    }
+
+    if(gap<=25){
+
+        return `<span class="badge yellow">Moderate</span>`;
+
+    }
+
+    return `<span class="badge red">Needs Improvement</span>`;
+
+}
+
+
+/* ================= SKILLS TABLE ================= */
+
+function renderSkills(){
+
+    const table=
+    document.getElementById("skillsTable");
+
+    table.innerHTML="";
+
+    if(skills.length===0){
+
+        table.innerHTML=
+        `<tr><td colspan="7">No skills added yet.</td></tr>`;
+
+        return;
+
+    }
+
+
+    skills.forEach(skill=>{
+
+        const gap=
+        Math.max(0,skill.target-skill.current);
+
+        table.innerHTML+=`
+
+        <tr>
+
+            <td><strong>${skill.name}</strong></td>
+
+            <td>${skill.category}</td>
+
+            <td>${skill.current}%</td>
+
+            <td>${skill.target}%</td>
+
+            <td>${gap}%</td>
+
+            <td>${getStatus(gap)}</td>
+
+            <td>
+
+                <button
+                    class="btn secondary small"
+                    onclick="openSkillModal(${skill.id})">
+                    Edit
+                </button>
+
+                <button
+                    class="btn danger small"
+                    onclick="deleteSkill(${skill.id})">
+                    Delete
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* ================= DASHBOARD ================= */
+
+function renderDashboard(){
+
+    document.getElementById("totalSkills")
+    .innerText=skills.length;
+
+
+    const average=
+
+    skills.length
+
+    ?
+
+    Math.round(
+        skills.reduce((sum,s)=>sum+s.current,0)
+        /skills.length
+    )
+
+    :0;
+
+
+    document.getElementById("averageSkill")
+    .innerText=average+"%";
+
+
+    const gaps=
+    skills.filter(
+        s=>s.target-s.current>10
+    ).length;
+
+
+    document.getElementById("skillGaps")
+    .innerText=gaps;
+
+
+    calculateCareer();
+
+
+    const performance=
+    document.getElementById("skillPerformance");
+
+    performance.innerHTML="";
+
+
+    if(skills.length===0){
+
+        performance.innerHTML=
+        "<p>No skills added yet.</p>";
+
+    }else{
+
+        skills.forEach(skill=>{
+
+            performance.innerHTML+=`
+
+            <div style="margin-bottom:18px">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                ">
+
+                    <strong>${skill.name}</strong>
+
+                    <span>${skill.current}%</span>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:${skill.current}%">
+                    </div>
+
+                </div>
+
+            </div>
+
+            `;
+
+        });
+
+    }
+
+
+    const gapBox=
+    document.getElementById("dashboardGaps");
+
+    const gapSkills=
+    skills
+    .filter(s=>s.target>s.current)
+    .sort(
+        (a,b)=>
+        (b.target-b.current)
+        -
+        (a.target-a.current)
+    );
+
+
+    if(gapSkills.length===0){
+
+        gapBox.innerHTML=
+        "<p>🎉 No skill gaps. Great job!</p>";
+
+    }else{
+
+        gapBox.innerHTML=
+        gapSkills.slice(0,5).map(skill=>`
+
+            <div style="margin-bottom:15px">
+
+                <strong>${skill.name}</strong>
+
+                <span style="float:right">
+                    Gap: ${skill.target-skill.current}%
+                </span>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:${skill.current}%">
+                    </div>
+
+                </div>
+
+            </div>
+
+        `).join("");
+
+    }
+
+}
+
+
+/* ================= CAREER READINESS ================= */
+
+function calculateCareer(){
+
+    const career=
+    document.getElementById("careerSelect").value;
+
+    const requirements=
+    careers[career];
+
+
+    let total=0;
+    let count=0;
+
+
+    const container=
+    document.getElementById("careerSkills");
+
+    container.innerHTML="";
+
+
+    Object.entries(requirements)
+    .forEach(([requiredSkill,requiredLevel])=>{
+
+        const studentSkill=
+        skills.find(
+            s=>s.name.toLowerCase()
+            ===requiredSkill.toLowerCase()
+        );
+
+
+        const current=
+        studentSkill
+        ?studentSkill.current
+        :0;
+
+
+        const contribution=
+        Math.min(
+            current/requiredLevel,
+            1
+        )*100;
+
+
+        total+=contribution;
+
+        count++;
+
+
+        let badge;
+
+        if(contribution>=80)
+            badge=`<span class="badge green">Good</span>`;
+
+        else if(contribution>=50)
+            badge=`<span class="badge yellow">Improve</span>`;
+
+        else
+            badge=`<span class="badge red">Missing</span>`;
+
+
+        container.innerHTML+=`
+
+        <div style="margin-bottom:18px">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+            ">
+
+                <strong>${requiredSkill}</strong>
+
+                ${badge}
+
+            </div>
+
+            <small style="color:var(--muted)">
+                Required: ${requiredLevel}% |
+                Your level: ${current}%
+            </small>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    style="width:${contribution}%">
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+
+    const readiness=
+    count
+    ?Math.round(total/count)
+    :0;
+
+
+    document.getElementById("readinessValue")
+    .innerText=readiness+"%";
+
+
+    document.getElementById("dashboardReadiness")
+    .innerText=readiness+"%";
+
+
+    document.getElementById("readinessCircle")
+    .style.background=
+    `conic-gradient(
+        var(--primary) ${readiness*3.6}deg,
+        #e5e7eb ${readiness*3.6}deg
+    )`;
+
+
+    let message;
+
+    if(readiness>=80)
+        message="Excellent! You are close to career ready.";
+
+    else if(readiness>=60)
+        message="Good progress. Keep improving your skill gaps.";
+
+    else if(readiness>=40)
+        message="You have a good foundation. Focus on weak skills.";
+
+    else
+        message="Start building the required skills step by step.";
+
+
+    document.getElementById("readinessMessage")
+    .innerText=message;
+
+}
+
+
+/* ================= ROADMAP ================= */
+
+function renderRoadmap(){
+
+    const container=
+    document.getElementById("roadmapList");
+
+    if(skills.length===0){
+
+        container.innerHTML=
+        "<p>Add skills to generate your learning roadmap.</p>";
+
+        return;
+
+    }
+
+
+    const sorted=
+    [...skills]
+    .sort(
+        (a,b)=>
+        (b.target-b.current)
+        -
+        (a.target-a.current)
+    );
+
+
+    container.innerHTML=
+    sorted.map(skill=>{
+
+        const gap=
+        Math.max(0,skill.target-skill.current);
+
+        let priority;
+
+        if(gap>40)
+            priority="High";
+
+        else if(gap>25)
+            priority="High";
+
+        else if(gap>10)
+            priority="Medium";
+
+        else
+            priority="Low";
+
+
+        let action="Practice consistently.";
+
+        if(skill.category==="Programming")
+            action=
+            "Practice coding problems and build a small project.";
+
+        else if(skill.category==="Data Science")
+            action=
+            "Practice data analysis using real datasets.";
+
+        else if(skill.category==="Web Development")
+            action=
+            "Build a responsive web project.";
+
+        else if(skill.category==="Database")
+            action=
+            "Practice SQL queries and database design.";
+
+        else if(skill.category==="Soft Skill")
+            action=
+            "Practice communication, presentation and teamwork.";
+
+
+        return `
+
+        <div class="roadmap-item">
+
+            <div class="roadmap-top">
+
+                <strong>${skill.name}</strong>
+
+                <span class="badge ${
+                    priority==="High"
+                    ?"red"
+                    :
+                    priority==="Medium"
+                    ?"yellow"
+                    :"green"
+                }">
+
+                    ${priority} Priority
+
+                </span>
+
+            </div>
+
+            <p>
+                Current: ${skill.current}% |
+                Target: ${skill.target}% |
+                Gap: ${gap}%
+            </p>
+
+            <p>
+                <strong>Recommended action:</strong>
+                ${action}
+            </p>
+
+        </div>
+
+        `;
+
+    }).join("");
+
+}
+
+
+/* ================= GOALS ================= */
+
+function renderGoals(){
+
+    const container=
+    document.getElementById("goalsList");
+
+    if(goals.length===0){
+
+        container.innerHTML="<p>No goals added.</p>";
+
+        return;
+
+    }
+
+
+    container.innerHTML=
+    goals.map(goal=>`
+
+        <div class="roadmap-item">
+
+            <div class="roadmap-top">
+
+                <strong>${goal.name}</strong>
+
+                <span>${goal.progress}%</span>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    style="width:${goal.progress}%">
+                </div>
+
+            </div>
+
+            <br>
+
+            <button
+                class="btn danger small"
+                onclick="deleteGoal(${goal.id})">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    `).join("");
+
+}
+
+
+function addGoal(){
+
+    const name=
+    prompt("Enter your goal:");
+
+    if(!name)
+        return;
+
+
+    goals.push({
+
+        id:Date.now(),
+        name:name,
+        progress:0
+
+    });
+
+
+    saveData();
+    renderGoals();
+
+}
+
+
+function deleteGoal(id){
+
+    goals=
+    goals.filter(g=>g.id!==id);
+
+    saveData();
+    renderGoals();
+
+}
+
+
+/* ================= ACHIEVEMENTS ================= */
+
+function renderAchievements(){
+
+    const container=
+    document.getElementById("achievementList");
+
+    if(achievements.length===0){
+
+        container.innerHTML=
+        "<p>No achievements added.</p>";
+
+        return;
+
+    }
+
+
+    container.innerHTML=
+    achievements.map(a=>`
+
+        <div class="roadmap-item">
+
+            <div class="roadmap-top">
+
+                <strong>🏆 ${a.name}</strong>
+
+                <span class="badge blue">
+                    ${a.type}
+                </span>
+
+            </div>
+
+            <br>
+
+            <button
+                class="btn danger small"
+                onclick="deleteAchievement(${a.id})">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    `).join("");
+
+}
+
+
+function addAchievement(){
+
+    const name=
+    prompt("Enter achievement:");
+
+    if(!name)
+        return;
+
+
+    const type=
+    prompt("Type (Course / Project / Certificate / Other):")
+    ||"Other";
+
+
+    achievements.push({
+
+        id:Date.now(),
+        name,
+        type
+
+    });
+
+
+    saveData();
+    renderAchievements();
+
+}
+
+
+function deleteAchievement(id){
+
+    achievements=
+    achievements.filter(a=>a.id!==id);
+
+    saveData();
+    renderAchievements();
+
+}
+
+
+/* ================= PROFILE ================= */
+
+function renderProfile(){
+
+    document.getElementById("profileName")
+    .value=profile.name;
+
+    document.getElementById("profileCourse")
+    .value=profile.course;
+
+    document.getElementById("profileSemester")
+    .value=profile.semester;
+
+    document.getElementById("profileCareer")
+    .value=profile.career;
+
+
+    document.getElementById("welcomeText")
+    .innerText=
+    `Welcome, ${profile.name}. Track your skills and career progress.`;
+
+}
+
+
+function saveProfile(){
+
+    profile={
+
+        name:
+        document.getElementById("profileName").value
+        ||"Student",
+
+        course:
+        document.getElementById("profileCourse").value
+        ||"B.Tech CSE",
+
+        semester:
+        document.getElementById("profileSemester").value
+        ||"S3",
+
+        career:
+        document.getElementById("profileCareer").value
+        ||"Software Developer"
+
+    };
+
+
+    saveData();
+
+    renderProfile();
+
+    alert("Profile saved successfully!");
+
+}
+
+
+/* ================= DARK MODE ================= */
+
+function toggleDarkMode(){
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "darkMode",
+        document.body.classList.contains("dark")
+    );
+
+}
+
+
+if(localStorage.getItem("darkMode")==="true"){
+
+    document.body.classList.add("dark");
+
+}
+
+
+/* ================= RESET ================= */
+
+function resetData(){
+
+    if(!confirm("Are you sure you want to clear all SkillTracker data?")){
+        return;
+    }
+
+    skills = [];
+    goals = [];
+    achievements = [];
+
+    profile = {
+        name:"",
+        course:"",
+        semester:"",
+        career:""
+    };
+
+    localStorage.setItem("skills", JSON.stringify(skills));
+    localStorage.setItem("goals", JSON.stringify(goals));
+    localStorage.setItem("achievements", JSON.stringify(achievements));
+    localStorage.setItem("profile", JSON.stringify(profile));
+
+    renderAll();
+
+    alert("All SkillTracker data has been cleared.");
+}
+
+
+/* ================= RENDER ALL ================= */
+
+function renderAll(){
+
+    renderSkills();
+
+    renderDashboard();
+
+    renderRoadmap();
+
+    renderGoals();
+
+    renderAchievements();
+
+    renderProfile();
+
+}
+
+
+/* ================= START ================= */
+
+renderAll();
+
+</script>
+
+</body>
+</html>
