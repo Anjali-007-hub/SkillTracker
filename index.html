@@ -533,7 +533,7 @@ input:focus,select:focus{
         <div class="card">
             <div class="stat-title">Total Skills</div>
             <div class="stat-value" id="totalSkills">0</div>
-            <div class="stat-sub">Skills being tracked</div>
+            <div class="stat-sub">Skills Being tracked</div>
         </div>
 
         <div class="card">
@@ -613,6 +613,7 @@ input:focus,select:focus{
                     <th>Current</th>
                     <th>Target</th>
                     <th>Gap</th>
+                    <th>Level</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -1224,7 +1225,12 @@ function getStatus(gap){
     return `<span class="badge red">Needs Improvement</span>`;
 
 }
-
+function getSkillLevel(current) {
+    if (current < 40) return "Beginner";
+    if (current < 60) return "Intermediate";
+    if (current < 80) return "Advanced";
+    return "Expert";
+}
 
 /* ================= SKILLS TABLE ================= */
 
@@ -1259,12 +1265,10 @@ function renderSkills(){
             <td>${skill.category}</td>
 
             <td>${skill.current}%</td>
-
-            <td>${skill.target}%</td>
-
-            <td>${gap}%</td>
-
-            <td>${getStatus(gap)}</td>
+<td>${skill.target}%</td>
+<td>${gap}%</td>
+<td><span class="badge blue">${getSkillLevel(skill.current)}</span></td>
+<td>${getStatus(gap)}</td>
 
             <td>
 
